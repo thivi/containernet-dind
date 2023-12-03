@@ -1,0 +1,22 @@
+# Use an official Python runtime as a parent image
+FROM python:3.10-slim
+
+# Install any needed packages specified in requirements.txt
+RUN apt-get update && apt-get install -y \
+    net-tools \
+    iputils-ping \
+    iproute2
+
+WORKDIR /home
+RUN mkdir web-server
+WORKDIR /home/web-server
+
+RUN pip install pipenv
+
+COPY ./web_server.py .
+COPY ./Pipfile .
+COPY ./Pipfile.lock .
+COPY ./log.txt .
+RUN ls
+RUN pipenv install --system --ignore-pipfile
+ENTRYPOINT ["python", "web_server.py"]
